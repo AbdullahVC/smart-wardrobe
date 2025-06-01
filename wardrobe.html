@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Wardrobe - Smart Wardrobe Organizer</title>
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
+    <nav>
+      <div class="nav-container">
+        <h2>Smart Wardrobe</h2>
+        <ul>
+          <li><a href="dashboard.html">Dashboard</a></li>
+          <li><a href="wardrobe.html" class="active">Wardrobe</a></li>
+          <li><a href="history.html">History</a></li>
+          <li><a href="#" onclick="logout()">Logout</a></li>
+        </ul>
+      </div>
+    </nav>
+
+    <div class="container">
+      <div class="wardrobe-section">
+        <h1>Manage My Wardrobe</h1>
+
+        <div class="add-item-form">
+          <h3>Add New Clothing Item</h3>
+          <form id="wardrobeForm">
+            <div class="form-group">
+              <label for="itemName">Item Name:</label>
+              <input
+                type="text"
+                id="itemName"
+                name="itemName"
+                required
+                placeholder="e.g. Blue jeans" />
+            </div>
+            <div class="form-group">
+              <label for="itemCategory">Category:</label>
+              <select id="itemCategory" name="itemCategory" required>
+                <option value="">Select...</option>
+                <option value="top">Top</option>
+                <option value="bottom">Bottom</option>
+                <option value="shoes">Shoes</option>
+                <option value="accessory">Accessory</option>
+                <option value="outerwear">Outerwear</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="itemColor">Color:</label>
+              <input
+                type="text"
+                id="itemColor"
+                name="itemColor"
+                placeholder="e.g. Blue, Red" />
+            </div>
+            <button type="submit">Add Item</button>
+          </form>
+        </div>
+
+        <div class="wardrobe-items">
+          <h3>My Items</h3>
+          <div id="itemsList" class="items-grid"></div>
+        </div>
+      </div>
+    </div>
+
+    <script src="js/main.js"></script>
+    <script>
+      window.onload = function () {
+        checkUser();
+        displayWardrobeItems();
+      };
+
+      document
+        .getElementById("wardrobeForm")
+        .addEventListener("submit", function (e) {
+          e.preventDefault();
+
+          const itemName = document.getElementById("itemName").value.trim();
+          const itemCategory = document.getElementById("itemCategory").value;
+          const itemColor = document.getElementById("itemColor").value.trim();
+
+          if (itemName && itemCategory) {
+            const newItem = {
+              id: Date.now(),
+              name: itemName,
+              category: itemCategory,
+              color: itemColor || "Not specified",
+              dateAdded: new Date().toLocaleDateString("en-US"),
+            };
+
+            addWardrobeItem(newItem);
+            document.getElementById("wardrobeForm").reset();
+            displayWardrobeItems();
+          }
+        });
+
+      function displayWardrobeItems() {
+        const itemsList = document.getElementById("itemsList");
+        const wardrobe = getWardrobe();
+
+        if (wardrobe.length === 0) {
+          itemsList.innerHTML =
+            '<p class="no-items">No items added yet. Use the form above to add clothing items.</p>';
+          return;
+        }
+
+        itemsList.innerHTML = wardrobe
+          .map(
+            (item) => `
+                <div class="item-card">
+                    <h4>${item.name}</h4>
+                    <p><strong>Category:</strong> ${item.category}</p>
+                    <p><strong>Color:</strong> ${item.color}</p>
+                    <p><strong>Added:</strong> ${item.dateAdded}</p>
+                    <button onclick="removeWardrobeItem(${item.id})" class="remove-btn">Delete</button>
+                </div>
+            `
+          )
+          .join("");
+      }
+
+      function removeWardrobeItem(itemId) {
+        if (confirm("Are you sure you want to delete this item?")) {
+          let wardrobe = getWardrobe();
+          wardrobe = wardrobe.filter((item) => item.id !== itemId);
+          localStorage.setItem("wardrobe", JSON.stringify(wardrobe));
+          displayWardrobeItems();
+        }
+      }
+    </script>
+  </body>
+</html>

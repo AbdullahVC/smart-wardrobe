@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>History - Smart Wardrobe Organizer</title>
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
+    <nav>
+      <div class="nav-container">
+        <h2>Smart Wardrobe</h2>
+        <ul>
+          <li><a href="dashboard.html">Dashboard</a></li>
+          <li><a href="wardrobe.html">Wardrobe</a></li>
+          <li><a href="history.html" class="active">History</a></li>
+          <li><a href="#" onclick="logout()">Logout</a></li>
+        </ul>
+      </div>
+    </nav>
+
+    <div class="container">
+      <div class="history-section">
+        <h1>Outfit Suggestion History</h1>
+
+        <div class="history-controls">
+          <button onclick="clearHistory()" class="clear-btn">
+            Clear History
+          </button>
+        </div>
+
+        <div id="historyList" class="history-items"></div>
+      </div>
+    </div>
+
+    <script src="js/main.js"></script>
+    <script>
+      window.onload = function () {
+        checkUser();
+        displayHistory();
+      };
+
+      function displayHistory() {
+        const historyList = document.getElementById("historyList");
+        const history = getHistory();
+
+        if (history.length === 0) {
+          historyList.innerHTML =
+            '<p class="no-items">No outfit suggestion history yet. Get outfit suggestions from the dashboard.</p>';
+          return;
+        }
+
+        // Sort history from newest to oldest
+        const sortedHistory = history.sort(
+          (a, b) => new Date(b.date) - new Date(a.date)
+        );
+
+        historyList.innerHTML = sortedHistory
+          .map(
+            (entry, index) => `
+                <div class="history-card">
+                    <div class="history-header">
+                        <h3>Suggestion #${history.length - index}</h3>
+                        <span class="history-date">${entry.date}</span>
+                    </div>
+                    <div class="history-content">
+                        <h4>${entry.outfit.name}</h4>
+                        <p><strong>Category:</strong> ${
+                          entry.outfit.category
+                        }</p>
+                        <p><strong>Color:</strong> ${entry.outfit.color}</p>
+                    </div>
+                </div>
+            `
+          )
+          .join("");
+      }
+
+      function clearHistory() {
+        if (
+          confirm(
+            "Are you sure you want to delete all outfit suggestion history?"
+          )
+        ) {
+          localStorage.removeItem("outfitHistory");
+          displayHistory();
+        }
+      }
+    </script>
+  </body>
+</html>

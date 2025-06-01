@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard - Smart Wardrobe Organizer</title>
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
+    <nav>
+      <div class="nav-container">
+        <h2>Smart Wardrobe</h2>
+        <ul>
+          <li><a href="dashboard.html" class="active">Dashboard</a></li>
+          <li><a href="wardrobe.html">Wardrobe</a></li>
+          <li><a href="history.html">History</a></li>
+          <li><a href="#" onclick="logout()">Logout</a></li>
+        </ul>
+      </div>
+    </nav>
+
+    <div class="container">
+      <div class="dashboard">
+        <div class="welcome-section">
+          <h1 id="welcomeMessage">Welcome!</h1>
+          <div class="weather-info">
+            <h3>🌤️ Today's Weather</h3>
+            <p>Sunny 25°C</p>
+            <p>Light breeze</p>
+          </div>
+        </div>
+
+        <div class="outfit-section">
+          <h3>Daily Outfit Suggestion</h3>
+          <button id="suggestBtn" onclick="suggestOutfit()">
+            Suggest Outfit
+          </button>
+          <div id="outfitSuggestion" class="outfit-result"></div>
+        </div>
+
+        <div class="quick-stats">
+          <div class="stat-card">
+            <h4>Total Items</h4>
+            <p id="totalItems">0</p>
+          </div>
+          <div class="stat-card">
+            <h4>Suggestion History</h4>
+            <p id="totalHistory">0</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="js/main.js"></script>
+    <script>
+      // Check user and update stats when page loads
+      window.onload = function () {
+        checkUser();
+        updateStats();
+      };
+
+      function updateStats() {
+        const totalItems = document.getElementById("totalItems");
+        const totalHistory = document.getElementById("totalHistory");
+
+        const wardrobe = getWardrobe();
+        const history = getHistory();
+
+        totalItems.textContent = wardrobe.length;
+        totalHistory.textContent = history.length;
+      }
+    </script>
+  </body>
+</html>
